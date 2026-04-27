@@ -1,26 +1,171 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #000000;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.hero-gradient {
+  background: linear-gradient(
+    125deg,
+    #ffffff 0%,
+    rgba(239, 233, 250, 0.82) 20%,
+    rgba(246, 243, 251, 0.95) 42%,
+    #ffffff 58%,
+    rgba(132, 88, 235, 0.195) 76%,
+    rgba(123, 75, 224, 0.12) 100%
+  );
+  background-size: 200% 200%;
+  animation: heroGradientShift 14s ease-in-out infinite;
+}
+
+.edge-yarn-svg {
+  overflow: visible;
+}
+
+.yarn-thread,
+.yarn-thread-shadow,
+.yarn-thread-highlight {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.yarn-thread {
+  stroke-width: 10;
+  opacity: 0.72;
+  filter: drop-shadow(0 4px 10px rgba(91, 47, 181, 0.12));
+}
+
+.yarn-thread-shadow {
+  stroke-width: 14;
+  opacity: 0.16;
+}
+
+.yarn-thread-highlight {
+  stroke-width: 5;
+  opacity: 0.48;
+}
+
+.yarn-thread-top {
+  stroke-dasharray: 8 20 140 18;
+}
+
+.yarn-drift {
+  animation: yarnDrift 9s ease-in-out infinite;
+}
+
+.edge-charm {
+  pointer-events: auto;
+  opacity: 0.82;
+  filter: drop-shadow(0 8px 14px rgba(91, 47, 181, 0.12));
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.edge-charm:hover {
+  opacity: 1;
+  animation: edgeCharmJiggle 0.55s ease-in-out;
+}
+
+.edge-charm-stroke {
+  fill: none;
+  stroke: #7b4be0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.edge-charm-fill {
+  fill: rgba(239, 233, 250, 0.38);
+  stroke: #7b4be0;
+  stroke-width: 10;
+}
+
+.shimmer-button {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.shimmer-button::after {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -22%;
+  width: 34%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 25%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0.18) 75%,
+    transparent 100%
+  );
+  transform: translate3d(-170%, 0, 0) rotate(16deg);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+}
+
+.shimmer-button:hover::after,
+.shimmer-button:focus-visible::after {
+  opacity: 1;
+  transform: translate3d(430%, 0, 0) rotate(16deg);
+}
+
+@keyframes heroGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes yarnDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 8px, 0);
+  }
+}
+
+@keyframes edgeCharmJiggle {
+  0% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+
+  20% {
+    transform: rotate(-7deg) translate3d(-1px, 1px, 0);
+  }
+
+  45% {
+    transform: rotate(6deg) translate3d(1px, -1px, 0);
+  }
+
+  70% {
+    transform: rotate(-4deg) translate3d(-1px, 0, 0);
+  }
+
+  100% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
 }
