@@ -1,4 +1,72 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { gsap } from "gsap";
 import Image from "next/image";
+
+const ribbonCharmPositions = [
+  { className: "-left-8 top-24 w-20 sm:w-24 lg:w-28", spreadX: -96, spreadY: -56, delay: 0.72 },
+  { className: "right-[16%] -top-4 w-16 -rotate-[14deg] sm:w-20", spreadX: 112, spreadY: -72, delay: 0.78 },
+  { className: "left-[8%] bottom-10 w-14 rotate-[12deg] sm:w-16", spreadX: -88, spreadY: 64, delay: 0.84 },
+  { className: "-right-6 top-[30%] w-14 -rotate-[18deg] sm:w-16", spreadX: 104, spreadY: 18, delay: 0.9 },
+  { className: "left-[38%] -top-6 w-12 rotate-[10deg] sm:w-14", spreadX: -24, spreadY: -92, delay: 0.96 },
+  { className: "right-[8%] bottom-[12%] w-12 rotate-[22deg] sm:w-14", spreadX: 82, spreadY: 58, delay: 1.02 },
+];
+
+const yarnBallPositions = [
+  { className: "-right-10 bottom-20 w-24 rotate-[10deg] sm:w-28 lg:w-32", spreadX: 124, spreadY: 76, delay: 0.92 },
+  { className: "-left-10 bottom-[26%] w-20 -rotate-[16deg] sm:w-24", spreadX: -118, spreadY: 42, delay: 0.98 },
+  { className: "right-[2%] top-[14%] w-16 rotate-[18deg] sm:w-20", spreadX: 96, spreadY: -46, delay: 1.04 },
+  { className: "left-[18%] -top-10 w-14 -rotate-[8deg] sm:w-16", spreadX: -74, spreadY: -104, delay: 1.1 },
+];
+
+const categoryHighlights = ["Blankets", "Flowers", "Amigurumi", "Custom Pieces"];
+
+const contentGroupVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.16,
+      delayChildren: 0.12,
+    },
+  },
+};
+
+const popUpVariants = {
+  hidden: {
+    opacity: 0,
+    y: 32,
+    scale: 0.94,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
+
+const imageVariants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+    scale: 0.92,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.95,
+      delay: 0.36,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
 
 function RibbonCharm({ className = "" }: { className?: string }) {
   return (
@@ -45,24 +113,129 @@ function YarnBallCharm({ className = "" }: { className?: string }) {
 }
 
 export function HeroSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (shouldReduceMotion || !sectionRef.current) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.to("[data-hero-visual]", {
+        y: -10,
+        duration: 5.8,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: 0.85,
+      });
+
+      gsap.utils.toArray<HTMLElement>("[data-hero-float]").forEach((node, index) => {
+        const distance = Number(node.dataset.floatDistance ?? 10);
+        const duration = Number(node.dataset.floatDuration ?? 4.8);
+        const entranceDelay = Number(node.dataset.entranceDelay ?? 0.9);
+
+        gsap.to(node, {
+          y: index % 2 === 0 ? -distance : distance,
+          x: index % 3 === 0 ? 4 : -4,
+          duration,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          delay: entranceDelay + 0.18,
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [shouldReduceMotion]);
+
   return (
-    <section className="hero-gradient relative overflow-hidden">
-      <RibbonCharm className="-left-8 top-24 w-20 sm:w-24 lg:w-28" />
-      <RibbonCharm className="right-[16%] -top-4 w-16 -rotate-[14deg] sm:w-20" />
-      <RibbonCharm className="left-[8%] bottom-10 w-14 rotate-[12deg] sm:w-16" />
-      <RibbonCharm className="-right-6 top-[30%] w-14 -rotate-[18deg] sm:w-16" />
-      <RibbonCharm className="left-[38%] -top-6 w-12 rotate-[10deg] sm:w-14" />
-      <RibbonCharm className="right-[8%] bottom-[12%] w-12 rotate-[22deg] sm:w-14" />
+    <motion.section
+      ref={sectionRef}
+      initial="hidden"
+      animate="visible"
+      className="hero-gradient relative overflow-hidden"
+    >
+      <div className="hero-gradient-shimmer" aria-hidden="true" />
 
-      <YarnBallCharm className="-right-10 bottom-20 w-24 rotate-[10deg] sm:w-28 lg:w-32" />
-      <YarnBallCharm className="-left-10 bottom-[26%] w-20 -rotate-[16deg] sm:w-24" />
-      <YarnBallCharm className="right-[2%] top-[14%] w-16 rotate-[18deg] sm:w-20" />
-      <YarnBallCharm className="left-[18%] -top-10 w-14 -rotate-[8deg] sm:w-16" />
+      {ribbonCharmPositions.map((item, index) => (
+        <motion.div
+          key={`ribbon-${item.className}`}
+          initial={{
+            opacity: 0,
+            x: item.spreadX,
+            y: item.spreadY,
+            scale: 0.72,
+            rotate: index % 2 === 0 ? -8 : 8,
+          }}
+          animate={{
+            opacity: 0.82,
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0,
+          }}
+          transition={{
+            duration: 1,
+            delay: item.delay,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          data-hero-float
+          data-float-distance={index % 2 === 0 ? 12 : 8}
+          data-float-duration={5 + index * 0.2}
+          data-entrance-delay={item.delay}
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{ willChange: "transform, opacity" }}
+        >
+          <RibbonCharm className={item.className} />
+        </motion.div>
+      ))}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-6 py-14 sm:px-10 lg:px-16">
+      {yarnBallPositions.map((item, index) => (
+        <motion.div
+          key={`yarn-${item.className}`}
+          initial={{
+            opacity: 0,
+            x: item.spreadX,
+            y: item.spreadY,
+            scale: 0.68,
+            rotate: index % 2 === 0 ? 10 : -10,
+          }}
+          animate={{
+            opacity: 0.82,
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0,
+          }}
+          transition={{
+            duration: 1.08,
+            delay: item.delay,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          data-hero-float
+          data-float-distance={index % 2 === 0 ? 14 : 10}
+          data-float-duration={5.6 + index * 0.24}
+          data-entrance-delay={item.delay}
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{ willChange: "transform, opacity" }}
+        >
+          <YarnBallCharm className={item.className} />
+        </motion.div>
+      ))}
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl items-center px-6 py-14 sm:px-10 lg:px-16">
         <div className="grid w-full items-center gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-4">
-          <div className="order-2 flex max-w-xl flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
-            <div className="relative mb-10 w-full max-w-[360px] sm:max-w-[430px] lg:max-w-[520px]">
+          <motion.div
+            variants={contentGroupVariants}
+            className="order-2 flex max-w-xl flex-col items-center text-center lg:order-1 lg:items-start lg:text-left"
+          >
+            <motion.div
+              variants={popUpVariants}
+              className="relative mb-10 w-full max-w-[360px] sm:max-w-[430px] lg:max-w-[520px]"
+            >
               <Image
                 src="/images/dee'sCozy.png"
                 alt="Dee's Cozy"
@@ -89,25 +262,55 @@ export function HeroSection() {
                 priority
                 className="absolute right-[-4%] top-[8%] h-auto w-[22%] sm:right-[-6%] sm:top-[62%] sm:w-[24%]"
               />
-            </div>
+            </motion.div>
 
-            <p className="mt-10 max-w-md text-base leading-7 text-cozy-dark/75 sm:text-lg">
+            <motion.p
+              variants={popUpVariants}
+              className="mt-10 max-w-md text-base leading-7 text-cozy-dark/75 sm:text-lg"
+            >
               Handmade crochet pieces, warm textures, and soft statement details
               made to bring a little extra comfort into your everyday space.
-            </p>
+            </motion.p>
 
-            <div className="mt-8 flex w-full justify-center lg:justify-start">
+            <motion.div
+              variants={popUpVariants}
+              className="mt-8 flex w-full flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start"
+            >
               <a
                 className="shimmer-button inline-flex h-12 min-w-[168px] items-center justify-center rounded-full bg-cozy-primary px-7 text-sm font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-cozy-secondary"
                 href="#contact"
               >
                 Contact Us
               </a>
-            </div>
-          </div>
+              <a
+                className="inline-flex h-12 min-w-[168px] items-center justify-center rounded-full border border-cozy-primary/35 bg-white/60 px-7 text-sm font-semibold uppercase tracking-[0.18em] text-cozy-primary shadow-[0_14px_34px_rgba(91,47,181,0.12)] backdrop-blur-sm transition-all hover:border-cozy-secondary hover:bg-white/85 hover:text-cozy-secondary"
+                href="#categories"
+              >
+                View Categories
+              </a>
+            </motion.div>
 
-          <div className="order-1 flex items-center justify-center lg:order-2 lg:justify-end">
-            <div className="relative w-full max-w-[960px]">
+            <motion.div
+              id="categories"
+              variants={popUpVariants}
+              className="mt-8 flex scroll-mt-24 flex-wrap justify-center gap-3 lg:justify-start"
+            >
+              {categoryHighlights.map((category) => (
+                <span
+                  key={category}
+                  className="inline-flex h-10 items-center rounded-full border border-cozy-primary/20 bg-white/70 px-4 text-sm font-medium text-cozy-dark/80 shadow-[0_10px_24px_rgba(91,47,181,0.08)] backdrop-blur-sm"
+                >
+                  {category}
+                </span>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            variants={imageVariants}
+            className="order-1 flex items-center justify-center lg:order-2 lg:justify-end"
+          >
+            <div className="relative w-full max-w-[960px]" data-hero-visual>
               <div className="absolute inset-x-8 bottom-8 h-16 rounded-full bg-cozy-cream/45 blur-md sm:inset-x-16 sm:h-20" />
               <div className="relative rounded-[2rem] bg-transparent">
                 <Image
@@ -120,9 +323,9 @@ export function HeroSection() {
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
