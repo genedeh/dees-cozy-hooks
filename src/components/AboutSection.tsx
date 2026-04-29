@@ -168,6 +168,19 @@ export function AboutSection() {
         0,
       );
 
+      introTimeline.to(
+        "[data-about-icon-float]",
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          opacity: 0.86,
+          stagger: 0.06,
+          ease: "none",
+        },
+        0.08,
+      );
+
       const pinnedTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -204,19 +217,6 @@ export function AboutSection() {
           ease: "none",
         },
         0.48,
-      );
-
-      pinnedTimeline.to(
-        "[data-about-icon-float]",
-        {
-          x: 0,
-          y: 0,
-          scale: 1,
-          opacity: 0.86,
-          stagger: 0.06,
-          ease: "none",
-        },
-        0.5,
       );
 
       pinnedTimeline.to(
