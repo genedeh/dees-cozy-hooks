@@ -291,7 +291,7 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div
-              id="categories"
+              id="hero-categories"
               variants={popUpVariants}
               className="mt-8 flex scroll-mt-24 flex-wrap justify-center gap-3 lg:justify-start"
             >

@@ -1,4 +1,5 @@
 import { AboutSection } from "../components/AboutSection";
+import { CategoriesSection } from "../components/CategoriesSection";
 import { HeroSection } from "../components/HeroSection";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <HeroSection />
       <AboutSection />
+      <CategoriesSection />
 
       <section
         id="contact"
