@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { LucideIcon } from "lucide-react";
+import { Heart, PackageCheck, Scissors, Sparkles } from "lucide-react";
 
 const headingText = "Empower Your Business's Financial Future Effortlessly";
-const placeholderImageUrl =
-  "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80";
 
 const infoCards = [
   {
@@ -18,6 +18,28 @@ const infoCards = [
     title: "My Vision",
     body: "To shape a cozy brand world where handmade texture feels elevated, personal, and unforgettable from first glance to final stitch.",
     tone: "dark",
+  },
+];
+
+const aboutProcessItems: Array<{
+  title: string;
+  body: string;
+  Icon: LucideIcon;
+}> = [
+  {
+    title: "Dream it",
+    body: "Share the color, size, mood, and details you want in your custom piece.",
+    Icon: Sparkles,
+  },
+  {
+    title: "Stitch it",
+    body: "Every loop is shaped slowly with soft yarn, care, and close attention.",
+    Icon: Scissors,
+  },
+  {
+    title: "Love it",
+    body: "Finished pieces are made to feel personal, cozy, and gift-ready.",
+    Icon: Heart,
   },
 ];
 
@@ -421,31 +443,57 @@ export function AboutSection() {
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.22fr)_minmax(280px,0.78fr)]">
             <article
               ref={imageCardRef}
-              className="group relative min-h-[440px] overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(17,24,39,0.12)]"
+              className="group relative min-h-[440px] overflow-hidden rounded-[2rem] bg-cozy-soft shadow-[0_28px_70px_rgba(17,24,39,0.12)]"
               style={{ willChange: "transform, opacity" }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={placeholderImageUrl}
-                alt="Team gathered around a work table"
-                className="h-full w-full object-cover"
-              />
+              <div className="absolute -left-20 top-10 h-56 w-56 rounded-full bg-cozy-accent/25 blur-3xl" />
+              <div className="absolute -bottom-24 right-6 h-72 w-72 rounded-full bg-cozy-primary/20 blur-3xl" />
               <div
                 data-about-image-overlay
-                className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent opacity-100 transition-opacity duration-500"
+                className="absolute inset-0 bg-gradient-to-br from-white/35 via-cozy-lavender/70 to-cozy-primary/20 opacity-100 transition-opacity duration-500"
               />
-              <div className="absolute inset-x-0 bottom-0 z-10 p-6 sm:p-8">
-                <h3 data-about-reveal className="text-2xl font-semibold text-white">
-                  My Story
-                </h3>
-                <p
-                  data-about-reveal
-                  className="mt-3 max-w-xl text-base leading-7 text-white"
-                >
-                  Crochet-forward collections designed with texture, softness, and
-                  a little bit of personality for homes that want comfort without
-                  feeling ordinary.
-                </p>
+
+              <div className="relative z-10 flex h-full min-h-[440px] flex-col justify-between p-6 sm:p-8">
+                <div className="flex items-start justify-between gap-6">
+                  <div>
+                    <p
+                      data-about-reveal
+                      className="text-sm font-semibold uppercase tracking-[0.18em] text-cozy-primary"
+                    >
+                      My Story
+                    </p>
+                    <h3
+                      data-about-reveal
+                      className="mt-4 max-w-xl text-4xl font-semibold leading-tight text-cozy-dark sm:text-5xl"
+                    >
+                      Crochet pieces made with warmth, patience, and personality.
+                    </h3>
+                  </div>
+
+                  <div className="hidden h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white text-cozy-primary shadow-[0_18px_44px_rgba(91,47,181,0.16)] sm:flex">
+                    <PackageCheck className="h-9 w-9" strokeWidth={1.8} />
+                  </div>
+                </div>
+
+                <div className="mt-12 grid gap-4 sm:grid-cols-3">
+                  {aboutProcessItems.map(({ title, body, Icon }) => (
+                    <div
+                      key={title}
+                      data-about-reveal
+                      className="rounded-[1.35rem] border border-white/70 bg-white/75 p-5 shadow-[0_18px_42px_rgba(91,47,181,0.1)] backdrop-blur-sm"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cozy-primary text-white">
+                        <Icon className="h-6 w-6" strokeWidth={1.8} />
+                      </div>
+                      <h4 className="mt-5 text-lg font-semibold text-cozy-dark">
+                        {title}
+                      </h4>
+                      <p className="mt-3 text-sm leading-6 text-cozy-dark/70">
+                        {body}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </article>
 

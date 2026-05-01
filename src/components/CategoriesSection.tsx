@@ -345,6 +345,33 @@ function CategoryCard({
   );
 }
 
+function MobileCategoryCard({ item }: { item: CategoryItem }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, amount: 0.24 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="overflow-hidden rounded-[1.35rem] border border-cozy-primary/10 bg-white shadow-[0_18px_44px_rgba(91,47,181,0.1)]"
+    >
+      <div className="aspect-[4/3] overflow-hidden bg-cozy-cream">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+      </div>
+
+      <div className="p-5">
+        <span className="inline-flex rounded-full bg-cozy-lavender px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-cozy-primary">
+          {item.label}
+        </span>
+        <h3 className="mt-4 text-xl font-semibold leading-tight text-cozy-dark">
+          {item.title}
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-cozy-dark/70">{item.description}</p>
+      </div>
+    </motion.article>
+  );
+}
+
 export function CategoriesSection() {
   const [activeIndex, setActiveIndex] = useState(2);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -425,7 +452,13 @@ export function CategoriesSection() {
           </div>
         </div>
 
-        <div className="relative min-h-[47rem] overflow-visible px-0 py-8 sm:min-h-[51rem] lg:min-h-[54rem]">
+        <div className="grid gap-5 md:hidden">
+          {categoryItems.map((item) => (
+            <MobileCategoryCard key={item.title} item={item} />
+          ))}
+        </div>
+
+        <div className="relative hidden min-h-[47rem] overflow-visible px-0 py-8 md:block sm:min-h-[51rem] lg:min-h-[54rem]">
           <div className="absolute inset-x-0 top-[13%] h-px bg-cozy-primary/20" />
 
           <div className="relative z-20 h-[42rem] overflow-visible sm:h-[46rem] lg:h-[49rem]">
